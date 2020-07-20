@@ -25,6 +25,7 @@ import {
   EXAMPLE_DIR,
   FAKE_FILE,
   FILES_IN_DIR,
+  DESTINATIONS_MINUS_DIR,
   FAKE_METADATA,
   EXAMPLE_PREFIX,
 } from './constants.test';
@@ -115,5 +116,33 @@ describe('Unit Test uploadDir', function() {
     destinations.forEach((destination: string) => {
       expect(destination.split('/')[0]).eq(EXAMPLE_PREFIX);
     });
+  });
+
+  it('uploads a dir with a prefix without the dir name', async function() {
+    const uploader = new UploadHelper(new Storage());
+    await uploader.uploadDirectory(
+      EXAMPLE_BUCKET,
+      EXAMPLE_DIR,
+      EXAMPLE_PREFIX,
+      false,
+    );
+    // Assert that uploadFile was called for each file in directory.
+    expect(this.uploadFileStub.callCount).eq(FILES_IN_DIR.length);
+    // Capture filename arguments passed to uploadFile.
+    const uploadFileCalls = this.uploadFileStub.getCalls();
+    const filenames = uploadFileCalls.map(
+      (uploadFileCall: sinon.SinonSpyCall) => uploadFileCall.args[1],
+    );
+    // Capture destination arguments passed to uploadFile.
+    const destinations = uploadFileCalls.map(
+      (uploadFileCall: sinon.SinonSpyCall) => uploadFileCall.args[2],
+    );
+    // Assert uploadDir called uploadFile with right files.
+    expect(filenames).to.have.members(FILES_IN_DIR);
+    // Assert uploadDir called uploadFile with prefixed destination.
+    destinations.forEach((destination: string) => {
+      expect(destination.split('/')[0]).eq(EXAMPLE_PREFIX);
+    });
+    expect(destinations).to.have.members(DESTINATIONS_MINUS_DIR);
   });
 });

@@ -20,6 +20,10 @@ inputs:
       GCS bucket name of form <bucketname> or with an optional prefix
       of form <bucketname>/<prefix>
     required: true
+  includePath:
+    description: |-
+      Boolean (default: true) Should the upload include the path prefix when uploading to the bucket.
+    required: false 
 
 runs:
   using: "node12"

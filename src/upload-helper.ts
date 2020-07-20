@@ -70,13 +70,14 @@ export class UploadHelper {
    * @param bucketName The name of the bucket.
    * @param directoryPath The path of the directory to upload.
    * @param objectKeyPrefix Optional Prefix for in the GCS bucket.
-   * @param clearExistingFilesFirst Clean files in the prefix before uploading.
+   * @param includePath Include the directoryPath path when uploading files.
    * @returns The list of UploadResponses which contains the file and metadata.
    */
   async uploadDirectory(
     bucketName: string,
     directoryPath: string,
     prefix = '',
+    includePath = true,
   ): Promise<UploadResponse[]> {
     const pathDirName = path.posix.dirname(directoryPath);
     // Get list of files in the directory.
@@ -88,9 +89,23 @@ export class UploadHelper {
         let destination = `${path.posix.dirname(
           path.posix.relative(pathDirName, filePath),
         )}`;
+        if (includePath == false) {
+          const inSubDirectory =
+            path.posix.normalize(directoryPath) !==
+            path.posix.dirname(filePath);
+          destination = inSubDirectory
+            ? `${path.posix.dirname(
+                path.posix.relative(
+                  path.posix.normalize(directoryPath),
+                  filePath,
+                ),
+              )}`
+            : '';
+        }
         // If prefix is set, prepend.
         if (prefix) {
-          destination = `${prefix}/${destination}`;
+          destination =
+            destination.length > 0 ? `${prefix}/${destination}` : prefix;
         }
 
         const uploadResp = await this.uploadFile(

@@ -61,3 +61,4 @@ flycheck_*.el
 # OS metadata
 .DS_Store
 Thumbs.db
+node_modules

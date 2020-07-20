@@ -36,3 +36,12 @@ export const FILES_IN_DIR = [
   'tests/testdata/testfile',
   'tests/testdata/🚀',
 ];
+
+export const DESTINATIONS_MINUS_DIR = [
+  'testprefix/nested1/nested2',
+  'testprefix/nested1',
+  'testprefix',
+  'testprefix',
+  'testprefix',
+  'testprefix',
+];

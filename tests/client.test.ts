@@ -51,7 +51,8 @@ describe('Unit Test Client', function() {
     const path = './tests/testdata/test1.txt';
     const bucketName = 'foo';
     const prefix = 'test-prefix';
-    await client.upload(`${bucketName}/${prefix}`, path);
+    const includePath = true;
+    await client.upload(`${bucketName}/${prefix}`, path, includePath);
     expect(uploadFileStub.calledOnce);
     expect(uploadFileStub.firstCall.args[0]).to.equal(bucketName);
     expect(uploadFileStub.firstCall.args[1]).to.equal(path);
@@ -66,10 +67,12 @@ describe('Unit Test Client', function() {
     const client = new Client();
     const path = './tests/testdata';
     const bucketName = 'foo';
-    await client.upload(bucketName, path);
+    const includePath = true;
+    await client.upload(bucketName, path, includePath);
     expect(uploadDirSpy.calledOnce);
     expect(uploadDirSpy.firstCall.args[0]).to.equal(bucketName);
     expect(uploadDirSpy.firstCall.args[1]).to.equal(path);
     expect(uploadDirSpy.firstCall.args[2]).to.equal('');
+    expect(uploadDirSpy.firstCall.args[3]).to.equal(includePath);
   });
 });
